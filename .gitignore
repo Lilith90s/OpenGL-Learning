@@ -3,3 +3,6 @@
 ################################################################################
 
 /.vs/LearnOpenGL/v15
+/Debug
+/LearnOpenGL/Debug/LearnOpenGL.tlog
+/LearnOpenGL/Debug
