@@ -62,15 +62,15 @@ int main()
 	}
 
 
-	// build and compile our shader program
+	// 编译链接顶点着色器和片段着色器
 	// ------------------------------------
-	// vertex shader
+	// 顶点着色器
 	int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	auto ret = readShaderSource("./shader/Triangle.vbo");
 	auto vertexShaderSource1 = ret->c_str();
 	glShaderSource(vertexShader, 1, &vertexShaderSource1, NULL);
 	glCompileShader(vertexShader);
-	// check for shader compile errors
+	// 检查顶点着色器编译是否出错
 	int success;
 	char infoLog[512];
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
@@ -79,23 +79,23 @@ int main()
 		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
-	// fragment shader
+	// 片段着色器
 	int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
 	glCompileShader(fragmentShader);
-	// check for shader compile errors
+	// 检查片段着色器编译是否出错
 	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
 		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
 		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
-	// link shaders
+	// 链接着色器
 	int shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
-	// check for linking errors
+	// 检查链接是否出错
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 	if (!success) {
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
