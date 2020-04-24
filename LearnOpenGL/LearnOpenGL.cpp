@@ -1,6 +1,7 @@
 ﻿#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "shader_s.h"
 #include "Shader.h"
 
 #include <iostream>
@@ -47,7 +48,7 @@ int main()
 
 	// build and compile our shader program
 	// ------------------------------------
-	Shader ourShader("3.3.shader.vs", "3.3.shader.fs"); // you can name your shader files however you like
+	Shader ourShader("./Triangle.glsl", "./FragmentUseVAO.glsl"); // you can name your shader files however you like
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
@@ -81,6 +82,8 @@ int main()
 
 	// render loop
 	// -----------
+	GLfloat offset = 0.0;
+	GLfloat increment = (float)0.00001;
 	while (!glfwWindowShouldClose(window))
 	{
 		// input
@@ -92,6 +95,10 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		// 设置偏移量
+		int offsetLocation = glGetUniformLocation(ourShader.ID, "offset_h");
+		glUniform1f(offsetLocation, offset);
+		offset += increment;
 		// render the triangle
 		ourShader.use();
 		glBindVertexArray(VAO);

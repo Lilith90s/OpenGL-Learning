@@ -34,6 +34,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="shader_s.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>头文件</Filter>
     </ClInclude>

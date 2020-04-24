@@ -9,24 +9,6 @@
 #include <sstream>
 #include <iostream>
 
-static std::string* readShaderSource(std::string shaderPath) {
-	std::string* source = new std::string;
-	std::ifstream f(shaderPath, std::ios::in);
-	if (!f)
-	{
-		std::cout << "打开文件失败: " << shaderPath << std::endl;
-		return nullptr;
-	}
-
-	std::string line;
-	while (getline(f, line))
-	{
-		line += "\n";
-		*source += line;
-	}
-	return source;
-}
-
 class Shader
 {
 public:
@@ -42,6 +24,30 @@ public:
 	// uniform 工具函数
 	template<typename T>
 	void setValue(const std::string&name,T value);
+private:
+	void checkCompileErrors(unsigned int shader, std::string type)
+	{
+		int success;
+		char infoLog[1024];
+		if (type != "PROGRAM")
+		{
+			glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+			if (!success)
+			{
+				glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+				std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+			}
+		}
+		else
+		{
+			glGetProgramiv(shader, GL_LINK_STATUS, &success);
+			if (!success)
+			{
+				glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+				std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+			}
+		}
+	}
 
 };
 

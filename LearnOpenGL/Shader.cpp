@@ -49,35 +49,21 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 	vertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex, 1, &vShaderCode, &success);
 	glCompileShader(vertex);
-	glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
+	checkCompileErrors(vertex, "VERTEX");
+
 
 	// 片段着色器
 	fragment = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment, 1, &fShaderCode, &success);
 	glCompileShader(fragment);
-	glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-	}
+	checkCompileErrors(fragment, "FRAGMENT");
 
 	// 着色器程序
 	ID = glCreateProgram();
 	glAttachShader(ID, vertex);
 	glAttachShader(ID, fragment);
 	glLinkProgram(ID);
-	glGetProgramiv(ID, GL_LINK_STATUS, &success);
-	if (!success)
-	{
-		glGetProgramInfoLog(ID, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-	}
+	checkCompileErrors(ID, "PROGRAM");
 
 	// 删除着色器，已经连接到着色器程序，所以不需要了
 	glDeleteShader(vertex);
