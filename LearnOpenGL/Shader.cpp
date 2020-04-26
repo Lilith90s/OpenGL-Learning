@@ -64,6 +64,8 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 	glAttachShader(ID, fragment);
 	glLinkProgram(ID);
 	checkCompileErrors(ID, "PROGRAM");
+	
+
 
 	// 删除着色器，已经连接到着色器程序，所以不需要了
 	glDeleteShader(vertex);
