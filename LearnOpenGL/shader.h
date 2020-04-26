@@ -24,6 +24,9 @@ public:
 	// uniform ¹¤¾ßº¯Êý
 	template<typename T>
 	void setValue(const std::string&name,T value);
+
+
+
 private:
 	void checkCompileErrors(unsigned int shader, std::string type)
 	{
@@ -50,5 +53,11 @@ private:
 	}
 
 };
+
+template<typename T>
+void Shader::setValue(const std::string&name, T value)
+{
+	glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+}
 
 #endif // !SHADER_HH

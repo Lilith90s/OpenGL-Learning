@@ -1,10 +1,4 @@
 #include "Shader.h"
-template<typename T>
-void Shader::setValue(const std::string&name, T value)
-{
-	
-	glUniform1i(glGetUniformLocation(ID, name.c_str()), (float)value);
-}
 
 Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 {
