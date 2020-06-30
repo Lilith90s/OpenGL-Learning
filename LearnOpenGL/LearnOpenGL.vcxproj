@@ -164,6 +164,7 @@
   <ItemGroup>
     <None Include="FragmentUseVAO.glsl" />
     <None Include="Triangle.glsl" />
+    <None Include="Triangle_3D.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h" />
