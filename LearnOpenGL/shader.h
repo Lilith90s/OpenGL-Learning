@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <glm/glm.hpp>
 
 class Shader
 {
@@ -25,6 +26,8 @@ public:
 	template<typename T>
 	void setValue(const std::string&name,T value);
 
+	// …Ë÷√æÿ’Ûuniform
+	void setMat4(std::string& name, glm::mat4& mat);
 
 
 private:
