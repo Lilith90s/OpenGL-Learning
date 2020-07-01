@@ -162,7 +162,11 @@
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="color.fs.glsl" />
+    <None Include="color.vs.glsl" />
     <None Include="FragmentUseVAO.glsl" />
+    <None Include="light.fs.glsl" />
+    <None Include="light.vs.glsl" />
     <None Include="Triangle.glsl" />
     <None Include="Triangle_3D.glsl" />
   </ItemGroup>

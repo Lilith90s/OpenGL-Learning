@@ -79,61 +79,62 @@ int main()
 	// build and compile our shader zprogram
 	// ------------------------------------
 	Shader ourShader("Triangle_3D.glsl", "FragmentUseVAO.glsl");
+	Shader colorShader("color.vs.glsl", "color.fs.glsl");
+	Shader lightShader("light.vs.glsl", "light.fs.glsl");
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
 	float vertices[] = {
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	-0.5f, -0.5f, -0.5f, // 0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f, // 1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f, // 1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f, // 1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f, // 0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f, // 0.0f, 0.0f,
+						 //
+	-0.5f, -0.5f,  0.5f, // 0.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f, // 1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f, // 1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f, // 1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f, // 0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f, // 0.0f, 0.0f,
+						 //
+	-0.5f,  0.5f,  0.5f, // 1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f, // 1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f, // 0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f, // 0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f, // 0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f, // 1.0f, 0.0f,
+						 //
+	 0.5f,  0.5f,  0.5f, // 1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f, // 1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f, // 0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f, // 0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f, // 0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f, // 1.0f, 0.0f,
+						 //
+	-0.5f, -0.5f, -0.5f, // 0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f, // 1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f, // 1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f, // 1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f, // 0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f, // 0.0f, 1.0f,
+						 //
+	-0.5f,  0.5f, -0.5f, // 0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f, // 1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f, // 1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f, // 1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f, // 0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f, // 0.0f, 1.0f
 	};
 	unsigned int indices[] = {
 		0, 1, 3, // first triangle
 		1, 2, 3  // second triangle
 	};
-	unsigned int VBO, VAO, EBO;
+	unsigned int VBO, VAO, EBO,lightVAO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
-
 	glBindVertexArray(VAO);
 
 	// 旋转矩阵
@@ -152,7 +153,7 @@ int main()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	// color attribute
 	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -211,7 +212,7 @@ int main()
 
 	// tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
 	// -------------------------------------------------------------------------------------------
-	ourShader.use(); // don't forget to activate/use the shader before setting uniforms!
+	//ourShader.use(); // don't forget to activate/use the shader before setting uniforms!
 	// either set it manually like so:
 	glUniform1i(glGetUniformLocation(ourShader.ID, "texture1"), 0);
 	// or set it via the texture class
@@ -247,7 +248,9 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
-		ourShader.use();
+		// ourShader.use();
+		lightShader.use();
+		colorShader.use();
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f)); // 模型旋转角度

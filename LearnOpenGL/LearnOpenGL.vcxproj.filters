@@ -35,6 +35,18 @@
     <None Include="Triangle_3D.glsl">
       <Filter>资源文件</Filter>
     </None>
+    <None Include="light.vs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="light.fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="color.fs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="color.vs.glsl">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader_s.h">
