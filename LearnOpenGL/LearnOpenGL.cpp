@@ -1,5 +1,6 @@
 ﻿#include "Camera.h"
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 #include "shader_s.h"
 #include "Shader.h"
 #include <iostream>
@@ -265,10 +266,26 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		// ourShader.use();
 		colorShader.use();
-		colorShader.setVec3("lightPos", lightPos);
-		colorShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
-		colorShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
+		// 生成光源颜色
+		glm::vec3 lightColor;
+		lightColor.x = sin(glfwGetTime()*2.0f);
+		lightColor.y = sin(glfwGetTime()*0.7f);
+		lightColor.z = sin(glfwGetTime()*1.3f);
+		// 降低影响
+		glm::vec3 deffuseColor = lightColor * glm::vec3(0.5f);
+		glm::vec3 ambientColor = lightColor * glm::vec3(0.2f);
+		// 传递光源以及材质属性
 		colorShader.setVec3("viewPos", cameraPos);
+		colorShader.setVec3("material.ambient", glm::vec3(1.0f, 0.5f, 0.31f));
+		colorShader.setVec3("material.diffuse", glm::vec3(1.0f, 0.5f, 0.31f));
+		colorShader.setVec3("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+		colorShader.setFloat("material.shininess", 32.0f);
+		colorShader.setVec3("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+		colorShader.setVec3("light.diffuse", deffuseColor); // 将光照调暗了一些以搭配场景
+		colorShader.setVec3("light.specular", ambientColor);
+		colorShader.setVec3("light.position", lightPos);
+
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f)); // 模型旋转角度
 		// 旋转摄像机 
@@ -291,6 +308,8 @@ int main()
 		lightShader.setMat4(std::string("model"), model);
 		lightShader.setMat4(std::string("view"), view);
 		lightShader.setMat4(std::string("projection"), projection);
+		// 改变光源颜色
+		lightShader.setVec3("lightColor", lightColor);
 		glBindVertexArray(lightVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
@@ -343,6 +362,7 @@ void processInput(GLFWwindow *window,Shader &shader)
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
 		g_camera.ProcessKeyboard(BACKWARD, deltaTime);
+		
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
@@ -358,7 +378,7 @@ void processInput(GLFWwindow *window,Shader &shader)
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
-		g_camera.ProcessKeyboard(DOWN, deltaTime);
+		g_camera.ProcessKeyboard(DOWN,deltaTime);
 	}
 }
 
