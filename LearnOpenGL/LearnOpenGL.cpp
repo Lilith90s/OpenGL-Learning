@@ -24,11 +24,11 @@ void glmtest()
 // settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
-
-Camera g_camera(glm::vec3(0.0f,0.0f,3.0f)); // 摄像机
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
+Camera g_camera(cameraPos); // 摄像机
 // 上一次鼠标位置，默认中心点
-unsigned int lastX = 400;
-unsigned int lastY = 300;
+float lastX = 400;
+float lastY = 300;
 bool isFirstMouseMove = true;	// 鼠标第一次移动，用于解决便宜不正确
 
 
@@ -37,6 +37,9 @@ float alpha = 0.5; // 透明度
 float angle = 0;  // 模型角度
 float deltaTime = 0.0f; // 当前帧与上一帧的时间差
 float lastFrame = 0.0f; // 上一帧的时间
+
+// 光源位置
+glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 int main()
 {
@@ -85,57 +88,60 @@ int main()
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
 	float vertices[] = {
-	-0.5f, -0.5f, -0.5f, // 0.0f, 0.0f,
-	 0.5f, -0.5f, -0.5f, // 1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f, // 1.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f, // 1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f, // 0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f, // 0.0f, 0.0f,
-						 //
-	-0.5f, -0.5f,  0.5f, // 0.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f, // 1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f, // 1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f, // 1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f, // 0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f, // 0.0f, 0.0f,
-						 //
-	-0.5f,  0.5f,  0.5f, // 1.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f, // 1.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f, // 0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f, // 0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f, // 0.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f, // 1.0f, 0.0f,
-						 //
-	 0.5f,  0.5f,  0.5f, // 1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f, // 1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f, // 0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f, // 0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f, // 0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f, // 1.0f, 0.0f,
-						 //
-	-0.5f, -0.5f, -0.5f, // 0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f, // 1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f, // 1.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f, // 1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f, // 0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f, // 0.0f, 1.0f,
-						 //
-	-0.5f,  0.5f, -0.5f, // 0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f, // 1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f, // 1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f, // 1.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f, // 0.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f, // 0.0f, 1.0f
-	};
+	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+
+	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+
+	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+
+	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+
+	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+
+	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+};
 	unsigned int indices[] = {
 		0, 1, 3, // first triangle
 		1, 2, 3  // second triangle
 	};
-	unsigned int VBO, VAO, EBO,lightVAO;
+	unsigned int VBO, VAO, EBO;
+
+
+
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
-	glBindVertexArray(VAO);
+	
 
 	// 旋转矩阵
 	// glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
@@ -148,19 +154,28 @@ int main()
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
+	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
+	glBindVertexArray(VAO);
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 	// color attribute
 	//glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	//glEnableVertexAttribArray(1);
 	// texture coord attribute
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
+	//glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	//glEnableVertexAttribArray(1);
+
+	unsigned int lightVAO;
+	glGenVertexArrays(1, &lightVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindVertexArray(lightVAO);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 
 
 	// load and create a texture 
@@ -249,28 +264,35 @@ int main()
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, texture2);
 		// ourShader.use();
-		lightShader.use();
 		colorShader.use();
-
+		colorShader.setVec3("lightPos", lightPos);
+		colorShader.setVec3("objectColor", glm::vec3(1.0f, 0.5f, 0.31f));
+		colorShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
+		colorShader.setVec3("viewPos", cameraPos);
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f)); // 模型旋转角度
-		// 旋转摄像机
+		// 旋转摄像机 
 		// float radius = 10.0f;
 		// float camX = sin(glfwGetTime())* radius;
 		// float camZ = cos(glfwGetTime())* radius;
 		glm::mat4 view = g_camera.GetViewMatrix(); // 摄像机
 		glm::mat4 projection = glm::perspective(glm::radians(g_camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-
-		unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
-		unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
-		unsigned int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
-
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-		
+		colorShader.setMat4(std::string("model"), model);
+		colorShader.setMat4(std::string("view"), view);
+		colorShader.setMat4(std::string("projection"), projection);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES,0, 36);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
+		lightShader.use();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, lightPos);
+		model = glm::scale(model, glm::vec3(0.2f));
+		lightShader.setMat4(std::string("model"), model);
+		lightShader.setMat4(std::string("view"), view);
+		lightShader.setMat4(std::string("projection"), projection);
+		glBindVertexArray(lightVAO);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
 		// -------------------------------------------------------------------------------
